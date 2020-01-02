@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/wouter173/pixal.git"
   },
-  "keywords": [],
+  "keywords": ["discord", "discord-js", "bot", "discord-bot"],
   "author": "Wouter",
   "license": "MIT",
   "bugs": {

@@ -1,18 +1,24 @@
-import { Client as DiscordClient } from 'discord.js';
+import { Client as DiscordClient, Message } from 'discord.js';
 import { Presence } from '../interfaces/Presence';
+import { Config } from '../interfaces/Config';
 import { Command } from './Command';
 
-export class Client implements Client {
+export class Client implements Config{
 	private client: DiscordClient;
 	private ready: Boolean;
-	public commands: Command[];
+	public commands: Array<Command>;
 	public presence: Presence;
+	public prefix: string;
+	public owner: string;
 
-	public constructor(token: string) {
+
+	public constructor(token: string, config: Config = { prefix: '!', owner: '' }) {
 		this.client = new DiscordClient();
 		this.commands = [];
 		this.ready = false;
 		this.presence = {};
+		this.prefix = config.prefix;
+		this.owner = config.owner;
 
 		this.client.login(token).catch(() => {
 			throw Error('Token incorrect or session timeout.');
@@ -21,12 +27,20 @@ export class Client implements Client {
 		this.client.on('ready', () => {
 			this.initialize();
 		});
+
+		this.client.on('message', message => {
+			this.onMessage(message);
+		});
 	}
 
 	private initialize() {
 		console.log(`online as user: ${this.client.user.tag}`);
 		this.ready = true;
 		if (this.presence) this.setPresence(this.presence);
+	}
+
+	private onMessage(message: Message) {
+		console.log(`Read new message: ${message}`);
 	}
 
 	public setPresence(presence: Presence): void {
@@ -39,7 +53,7 @@ export class Client implements Client {
 		};
 	}
 
-	public setCommands(commands: Command[]): void {
+	public setCommands(commands: Array<Command>): void {
 		this.commands = commands;
 	}
 }
