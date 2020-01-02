@@ -1,0 +1,35 @@
+{
+  "name": "pixal",
+  "files": [
+    "lib/**/*"
+  ],
+  "version": "1.0.0",
+  "description": "A simple discord bot library.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc && npm run bundle",
+    "build:dev": "tsc -w",
+    "bundle": "dts-bundle --name pixal --baseDir lib/ --main **/*.d.ts --out pixal.d.ts --outputAsModuleFolder --removeSource"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wouter173/pixal.git"
+  },
+  "keywords": [],
+  "author": "Wouter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wouter173/pixal/issues"
+  },
+  "homepage": "https://github.com/wouter173/pixal#readme",
+  "devDependencies": {
+    "@typescript-eslint/parser": "^2.13.0",
+    "dts-bundle": "^0.7.3",
+    "eslint": "^6.8.0",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "discord.js": "^11.5.1"
+  }
+}
