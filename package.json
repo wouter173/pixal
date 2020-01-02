@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "description": "A simple discord bot library.",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "lib/pixal.d.ts",
   "scripts": {
     "build": "tsc && npm run bundle",
     "build:dev": "tsc -w",
