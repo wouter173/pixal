@@ -7,7 +7,7 @@ export class Command {
 	public usage?: string;
 	public alias?: Array<string>;
 
-	private constructor(name: string, description: string, usage?: string, alias?: string[]) {
+	public constructor(name: string, description: string, usage?: string, alias?: string[]) {
 		this.name = name;
 		this.description = description;
 		this.usage = usage;
@@ -15,6 +15,6 @@ export class Command {
 	}
 
 	public run(msg: Message, args: Array<string>, cmd: string) {
-
+		console.log(`new command issued: ${this.name}`);
 	}
 }

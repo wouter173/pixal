@@ -1,11 +1,13 @@
 import { Client as DiscordClient, Message } from 'discord.js';
 import { Presence } from '../interfaces/Presence';
+import { Callable } from '../interfaces/Callable';
 import { Config } from '../interfaces/Config';
 import { Command } from './Command';
 
 export class Client implements Config{
 	private client: DiscordClient;
 	private ready: Boolean;
+	private callables: Array<Callable>;
 	public commands: Array<Command>;
 	public presence: Presence;
 	public prefix: string;
@@ -14,8 +16,9 @@ export class Client implements Config{
 
 	public constructor(token: string, config: Config = { prefix: '!', owner: '' }) {
 		this.client = new DiscordClient();
-		this.commands = [];
 		this.ready = false;
+		this.callables = [];
+		this.commands = [];
 		this.presence = {};
 		this.prefix = config.prefix;
 		this.owner = config.owner;
@@ -40,7 +43,17 @@ export class Client implements Config{
 	}
 
 	private onMessage(message: Message) {
-		console.log(`Read new message: ${message}`);
+
+		if (message.author.bot) return;
+		if (!message.content.toLowerCase().startsWith(this.prefix)) return;
+
+		const args: Array<string> = message.content.toLowerCase().split(' ');
+		const _cmd: string = args.shift() || '';
+		const cmd: string = _cmd.split(this.prefix)[1];
+
+		for (let callable of this.callables) {
+			if (callable.name == cmd) callable.run(message, args, cmd);
+		}
 	}
 
 	public setPresence(presence: Presence): void {
@@ -55,5 +68,11 @@ export class Client implements Config{
 
 	public setCommands(commands: Array<Command>): void {
 		this.commands = commands;
+		for (let command of this.commands) {
+			const alias: Array<string> = command.alias || [];
+			const callers: Array<string> = [...alias, command.name];
+			const callables: Array<Callable> = callers.map(caller => { return { name: caller.toLowerCase(), run: command.run }; });
+			this.callables = [...this.callables, ...callables];
+		}
 	}
 }
