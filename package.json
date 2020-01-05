@@ -3,7 +3,7 @@
   "files": [
     "lib/**/*"
   ],
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A simple discord bot library.",
   "main": "lib/index.js",
   "types": "lib/pixal.d.ts",
