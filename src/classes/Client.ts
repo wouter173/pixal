@@ -58,12 +58,10 @@ export class Client implements Config{
 
 	public setPresence(presence: Presence): void {
 		this.presence = presence;
-		if (this.ready) {
-			this.client.user.setPresence({
-				status: presence.status,
-				game: { type: presence.type, name: presence.name }
-			});
-		};
+		if (this.ready) this.client.user.setPresence({
+			status: presence.status,
+			game: { type: presence.type, name: presence.name }
+		});
 	}
 
 	public setCommands(commands: Array<Command>): void {
