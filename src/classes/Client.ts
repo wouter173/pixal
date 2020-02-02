@@ -2,6 +2,7 @@ import { Client as DiscordClient, Message } from 'discord.js';
 import { Presence } from '../interfaces/Presence';
 import { Callable } from '../interfaces/Callable';
 import { Config } from '../interfaces/Config';
+import { help } from '../functions/help';
 import { Command } from './Command';
 
 export class Client implements Config{
@@ -12,16 +13,20 @@ export class Client implements Config{
 	public presence: Presence;
 	public prefix: string;
 	public owner: string;
+	public help: boolean;
 
 
-	public constructor(token: string, config: Config = { prefix: '!', owner: '' }) {
+	public constructor(token: string, config: Config) {
 		this.client = new DiscordClient();
 		this.ready = false;
 		this.callables = [];
 		this.commands = [];
 		this.presence = {};
-		this.prefix = config.prefix;
-		this.owner = config.owner;
+		this.prefix = config.prefix || '!';
+		this.owner = config.owner || '';
+		this.help = config.help || false;
+		console.log(this.help);
+		console.log(config);
 
 		this.client.login(token).catch(() => {
 			throw Error('Token incorrect or session timeout.');
@@ -40,6 +45,8 @@ export class Client implements Config{
 		console.log(`online as user: ${this.client.user.tag}`);
 		this.ready = true;
 		if (this.presence) this.setPresence(this.presence);
+		if (this.help == true) this.addCommand(new help());
+		console.log(this);
 	}
 
 	private onMessage(message: Message) {
@@ -52,7 +59,7 @@ export class Client implements Config{
 		const cmd: string = _cmd.split(this.prefix)[1];
 
 		for (let callable of this.callables) {
-			if (callable.name == cmd) callable.run(message, args, cmd);
+			if (callable.name == cmd) callable.run(message, args, cmd, this);
 		}
 	}
 
@@ -64,13 +71,19 @@ export class Client implements Config{
 		});
 	}
 
-	public setCommands(commands: Array<Command>): void {
-		this.commands = commands;
-		for (let command of this.commands) {
-			const alias: Array<string> = command.alias || [];
-			const callers: Array<string> = [...alias, command.name];
-			const callables: Array<Callable> = callers.map(caller => { return { name: caller.toLowerCase(), run: command.run }; });
-			this.callables = [...this.callables, ...callables];
+	public addCommands(commands: Array<Command>): void {
+		for (let command of commands) {
+			this.addCommand(command);
 		}
+	}
+
+	public addCommand(command: Command): void {
+
+		this.commands = [...this.commands, command];
+
+		const alias: Array<string> = command.alias || [];
+		const callers: Array<string> = [...alias, command.name];
+		const callables: Array<Callable> = callers.map(caller => { return { name: caller.toLowerCase(), run: command.run }; });
+		this.callables = [...this.callables, ...callables];
 	}
 }
