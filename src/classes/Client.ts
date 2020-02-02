@@ -5,29 +5,33 @@ import { Config } from '../interfaces/Config';
 import { help } from '../functions/help';
 import { Command } from './Command';
 
-export class Client implements Config{
+export class Client {
 	private client: DiscordClient;
 	private ready: Boolean;
 	private callables: Array<Callable>;
 	public commands: Array<Command>;
 	public presence: Presence;
-	public prefix: string;
-	public owner: string;
-	public help: boolean;
+	public config: Config;
 
 
 	public constructor(token: string, config: Config) {
+
+		//main variable setup
 		this.client = new DiscordClient();
 		this.ready = false;
 		this.callables = [];
 		this.commands = [];
 		this.presence = {};
-		this.prefix = config.prefix || '!';
-		this.owner = config.owner || '';
-		this.help = config.help || false;
-		console.log(this.help);
-		console.log(config);
 
+		//config setup
+		this.config = {};
+		this.config.prefix = config.prefix || '!';
+		this.config.owner = config.owner || '';
+		this.config.help = config.help || false;
+		this.config.err_color = config.err_color || '#cb2431';
+		this.config.main_color = config.main_color || '#363940';
+
+		//discord.js event handling
 		this.client.login(token).catch(() => {
 			throw Error('Token incorrect or session timeout.');
 		});
@@ -45,18 +49,18 @@ export class Client implements Config{
 		console.log(`online as user: ${this.client.user.tag}`);
 		this.ready = true;
 		if (this.presence) this.setPresence(this.presence);
-		if (this.help == true) this.addCommand(new help());
+		if (this.config.help == true) this.addCommand(new help());
 		console.log(this);
 	}
 
 	private onMessage(message: Message) {
 
 		if (message.author.bot) return;
-		if (!message.content.toLowerCase().startsWith(this.prefix)) return;
+		if (!message.content.toLowerCase().startsWith(this.config.prefix!)) return;
 
 		const args: Array<string> = message.content.toLowerCase().split(' ');
 		const _cmd: string = args.shift() || '';
-		const cmd: string = _cmd.split(this.prefix)[1];
+		const cmd: string = _cmd.split(this.config.prefix!)[1];
 
 		for (let callable of this.callables) {
 			if (callable.name == cmd) callable.run(message, args, cmd, this);
