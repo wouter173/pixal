@@ -2,7 +2,6 @@ import { Client as DiscordClient, Message } from 'discord.js';
 import { Presence } from '../interfaces/Presence';
 import { Callable } from '../interfaces/Callable';
 import { Config } from '../interfaces/Config';
-import { help } from '../functions/help';
 import { Command } from './Command';
 
 export class Client {
@@ -27,7 +26,6 @@ export class Client {
 		this.config = {};
 		this.config.prefix = config.prefix || '!';
 		this.config.owner = config.owner || '';
-		this.config.help = config.help || false;
 		this.config.err_color = config.err_color || '#cb2431';
 		this.config.main_color = config.main_color || '#363940';
 
@@ -49,8 +47,6 @@ export class Client {
 		console.log(`online as user: ${this.client.user.tag}`);
 		this.ready = true;
 		if (this.presence) this.setPresence(this.presence);
-		if (this.config.help == true) this.addCommand(new help());
-		console.log(this);
 	}
 
 	private onMessage(message: Message) {
