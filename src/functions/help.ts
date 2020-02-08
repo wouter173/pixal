@@ -16,7 +16,7 @@ export class help extends Command {
 
 			let fields: Array<Field> = [];
 			for (let command of client.commands) {
-				fields.push({ title: command.name, description: `${client.config.prefix}${command.usage}`, inline: true });
+				fields.push({ title: command.name, description: `${command.description}`, inline: true });
 			}
 
 			return msg.channel.send(new Embed('Help: ', 'These are the commands this bot has!', client.config.main_color!, msg.author, fields));
@@ -27,7 +27,7 @@ export class help extends Command {
 			console.log(command);
 
 			if (command)
-				return msg.channel.send(new Embed(`Help:  **${command.name}**`, `**description:** ${command.description} \n **usage:** ${command.usage || 'Usage not defined.'} \n **aliases:** ${command.alias?.join(', ') || 'No aliases defined.'}`, client.config.main_color!, msg.author));
+				return msg.channel.send(new Embed(`Help:  **${command.name}**`, `**description:** ${command.description} \n **usage:** ${client.config.prefix}${command.usage} \n **aliases:** ${command.alias?.join(', ') || 'No aliases defined.'}`, client.config.main_color!, msg.author));
 
 			
 			return msg.channel.send(new Embed('Error', `**${args[0]}** is not a command!`, client.config.err_color!, msg.author));
