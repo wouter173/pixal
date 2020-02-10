@@ -6,7 +6,7 @@ import { Field } from '../interfaces/Field';
 
 export class help extends Command {
 	constructor() {
-		super('help', 'The default help command.', 'help <command>', ['h']);
+		super('help', 'The default help command.', 'help', 'help <command>', ['h']);
 	}
 
 	run(msg: Message, args: Array<string>, _cmd: string, client: Client) {
@@ -16,7 +16,7 @@ export class help extends Command {
 
 			let fields: Array<Field> = [];
 			for (let command of client.commands) {
-				fields.push({ title: command.name, description: `${command.description}`, inline: true });
+				fields.push({ title: command.name, description: `${client.config.prefix}${command.usage}`, inline: true });
 			}
 
 			return msg.channel.send(new Embed('Help: ', 'These are the commands this bot has!', client.config.main_color!, msg.author, fields));
@@ -24,7 +24,6 @@ export class help extends Command {
 		} else {
 
 			let command = client.commands.find(cur => cur.name == args[0]);
-			console.log(command);
 
 			if (command)
 				return msg.channel.send(new Embed(`Help:  **${command.name}**`, `**description:** ${command.description} \n **usage:** ${client.config.prefix}${command.usage} \n **aliases:** ${command.alias?.join(', ') || 'No aliases defined.'}`, client.config.main_color!, msg.author));

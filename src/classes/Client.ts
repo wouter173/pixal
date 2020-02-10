@@ -3,6 +3,7 @@ import { Presence } from '../interfaces/Presence';
 import { Callable } from '../interfaces/Callable';
 import { Config } from '../interfaces/Config';
 import { Command } from './Command';
+import { Event } from './Event';
 
 export class Client {
 	private client: DiscordClient;
@@ -43,13 +44,13 @@ export class Client {
 		});
 	}
 
-	private initialize() {
+	private initialize(): void {
 		console.log(`online as user: ${this.client.user.tag}`);
 		this.ready = true;
 		if (this.presence) this.setPresence(this.presence);
 	}
 
-	private onMessage(message: Message) {
+	private onMessage(message: Message): void {
 
 		if (message.author.bot) return;
 		if (!message.content.toLowerCase().startsWith(this.config.prefix!)) return;
@@ -68,6 +69,18 @@ export class Client {
 		if (this.ready) this.client.user.setPresence({
 			status: presence.status,
 			game: { type: presence.type, name: presence.name }
+		});
+	}
+
+	public addEvents(events: Array<Event>): void {
+		for (let event of events) {
+			this.addEvent(event);
+		}
+	}
+
+	public addEvent(event: Event): void {
+		this.client.on(event.name, (...args: any[]) => {
+			event.run(this, args);
 		});
 	}
 
