@@ -19,17 +19,17 @@ export class help extends Command {
 				fields.push({ title: command.name, description: `${client.config.prefix}${command.usage}`, inline: true });
 			}
 
-			return msg.channel.send(new Embed('Help: ', 'These are the commands this bot has!', client.config.main_color!, msg.author, fields));
+			return msg.channel.send(new Embed('Help: ', 'These are the commands this bot has!', client.config.main_color, msg.author, fields));
 
 		} else {
 
 			let command = client.commands.find(cur => cur.name == args[0]);
 
 			if (command)
-				return msg.channel.send(new Embed(`Help:  **${command.name}**`, `**description:** ${command.description} \n **usage:** ${client.config.prefix}${command.usage} \n **aliases:** ${command.alias?.join(', ') || 'No aliases defined.'}`, client.config.main_color!, msg.author));
+				return msg.channel.send(new Embed(`Help:  **${command.name}**`, `**description:** ${command.description} \n **usage:** ${client.config.prefix}${command.usage} \n **aliases:** ${command.alias?.join(', ') || 'No aliases defined.'}`, client.config.main_color, msg.author));
 
 			
-			return msg.channel.send(new Embed('Error', `**${args[0]}** is not a command!`, client.config.err_color!, msg.author));
+			return msg.channel.send(new Embed('Error', `**${args[0]}** is not a command!`, client.config.err_color, msg.author));
 		}
 	}
 }

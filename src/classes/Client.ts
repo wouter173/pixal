@@ -1,7 +1,7 @@
 import { Client as DiscordClient, Message } from 'discord.js';
 import { Presence } from '../interfaces/Presence';
 import { Callable } from '../interfaces/Callable';
-import { Config } from '../interfaces/Config';
+import { Config, Role } from '../interfaces/Config';
 import { Command } from './Command';
 import { Event } from './Event';
 
@@ -11,7 +11,13 @@ export class Client {
 	private callables: Array<Callable>;
 	public commands: Array<Command>;
 	public presence: Presence;
-	public config: Config;
+	public config: {
+		prefix: string;
+		owner: string;
+		err_color: string;
+		main_color: string;
+		roles: Array<Role>;
+	}
 
 
 	public constructor(token: string, config: Config) {
@@ -24,11 +30,13 @@ export class Client {
 		this.presence = {};
 
 		//config setup
-		this.config = {};
-		this.config.prefix = config.prefix || '!';
-		this.config.owner = config.owner || '';
-		this.config.err_color = config.err_color || '#cb2431';
-		this.config.main_color = config.main_color || '#363940';
+		this.config = {
+			prefix: config.prefix ?? '!',
+			owner: config.owner ?? '',
+			err_color: config.err_color ?? '#cb2431',
+			main_color: config.main_color ?? '#363940',
+			roles: config.roles ?? []
+		};
 
 		//discord.js event handling
 		this.client.login(token).catch(() => {
